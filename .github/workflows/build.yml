@@ -1,0 +1,26 @@
+name: Build and Push
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Yandex Container Registry
+        run: |
+          echo "${{ secrets.YC_REGISTRY_PASSWORD }}" | docker login \
+            --username json_key \
+            --password-stdin cr.yandex
+
+      - name: Build and push
+        run: |
+          IMAGE=cr.yandex/${{ secrets.YC_REGISTRY_ID }}/myapp:${{ github.sha }}
+          docker build -t $IMAGE -f app/Dockerfile app
+          docker push $IMAGE
+
+          # Обновляем latest
+          docker tag $IMAGE cr.yandex/${{ secrets.YC_REGISTRY_ID }}/myapp:latest
+          docker push cr.yandex/${{ secrets.YC_REGISTRY_ID }}/myapp:latest
