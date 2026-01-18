@@ -11,7 +11,9 @@ jobs:
 
       - name: Login to Yandex Container Registry
         run: |
-          echo "${{ secrets.YC_REGISTRY_PASSWORD }}" > key.json
+          cat > key.json << 'EOF'
+          ${{ secrets.YC_REGISTRY_PASSWORD }}
+          EOF
           docker login --username json_key --password-stdin cr.yandex < key.json
           rm key.json
 
