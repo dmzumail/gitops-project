@@ -18,6 +18,3 @@ spec:
         image: cr.yandex/crpbgs2g40klnpga88kd/myapp:latest
         ports:
         - containerPort: 5000
-        envFrom:
-        - secretRef:
-            name: myapp-secrets
